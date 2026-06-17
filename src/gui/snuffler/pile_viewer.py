@@ -2426,8 +2426,14 @@ def MakePileViewerMainClass(base):
                         marker.set_event(event)
 
                 else:
-                    for marker in event_markers_in_spe:
-                        marker.convert_to_event_marker()
+                    if phase_markers and not event_markers_in_spe:
+                        active_event = self.get_active_event()
+                        if active_event is not None:
+                            for marker in phase_markers:
+                                marker.set_event(active_event)
+                    else:
+                        for marker in event_markers_in_spe:
+                            marker.convert_to_event_marker()
 
             elif keytext in ('0', '1', '2', '3', '4', '5', '6', '7'):
                 for marker in self.floating_or_selected_markers():
