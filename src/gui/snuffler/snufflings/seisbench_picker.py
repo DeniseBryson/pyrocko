@@ -231,7 +231,6 @@ class SeisBenchDetector(Snuffling):
         viewer.frequency_filter_changed.disconnect(self.content_changed)
 
     def call(self) -> None:
-        self.cleanup()
         self.get_viewer().clean_update()
         self.adjust_thresholds()
 
