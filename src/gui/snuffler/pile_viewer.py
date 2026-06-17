@@ -2431,6 +2431,10 @@ def MakePileViewerMainClass(base):
                         if active_event is not None:
                             for marker in phase_markers:
                                 marker.set_event(active_event)
+                        else:
+                            for marker in phase_markers:
+                                marker.set_event(None)
+                                marker.set_event_hash(None)
                     else:
                         for marker in event_markers_in_spe:
                             marker.convert_to_event_marker()
