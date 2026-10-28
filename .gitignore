@@ -49,3 +49,4 @@ __pycache__/
 /docker/pyrocko-test-data/
 /docker/*/pyrocko-test-data/
 /venv
+/uv.lock

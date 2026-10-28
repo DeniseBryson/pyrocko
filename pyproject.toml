@@ -42,9 +42,11 @@ dependencies = [
     "numpy>=1.16,<2; python_version<='3.11'",
     "scipy>=1.0",
     "pyyaml",
-    "matplotlib",
+    "matplotlib<3.11",
     "requests",
     "tornado",
+    "pyqt5>=5.15.11",
+    "seisbench>=0.12.6",
 ]
 
 [project.optional-dependencies]
