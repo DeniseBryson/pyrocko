@@ -828,6 +828,20 @@ def MakePileViewerMainClass(base):
             self.picking = None
             self.batch_picking = False
             self.floating_marker = None
+
+            # Label prompt shown after a double-click marker is placed.
+            # Qt emits returnPressed *before* editingFinished, and
+            # editingFinished also fires on focus loss: so Enter commits and
+            # then hides, while Esc / clicking elsewhere only hides.
+            self.label_marker = None
+            self.label_edit = LineEditWithAbort(self)
+            self.label_edit.setPlaceholderText(
+                'Label (Enter to save, Esc to cancel)')
+            self.label_edit.hide()
+            self.label_edit.returnPressed.connect(self._commit_label)
+            self.label_edit.editingFinished.connect(self.label_edit.hide)
+            self.label_edit.aborted.connect(self.label_edit.hide)
+
             self.markers = pyrocko.pile.Sorted([], 'tmin')
             self.markers_deltat_max = 0.
             self.n_selected_markers = 0
@@ -4092,6 +4106,7 @@ def MakePileViewerMainClass(base):
                     self.add_marker(self.floating_marker)
                     self.floating_marker.selected = True
                     self.emit_selected_markers()
+                    self.start_label_edit(self.floating_marker, x, y)
 
                 self.floating_marker = None
 
@@ -4099,6 +4114,32 @@ def MakePileViewerMainClass(base):
                     self.start_picking(batch=True, previous=previous)
                 else:
                     self.batch_picking = False
+
+        def start_label_edit(self, marker, x, y):
+            '''
+            Show the label field for ``marker`` at pixel position (x, y).
+            '''
+            self.label_marker = marker
+            self.label_edit.clear()
+            self.label_edit.resize(240, self.label_edit.sizeHint().height())
+            # keep the field inside the widget when picking near the edge
+            self.label_edit.move(
+                max(0, min(x, self.width() - self.label_edit.width())),
+                max(0, min(y, self.height() - self.label_edit.height())))
+            self.label_edit.show()
+            # focus makes typing go into the field instead of triggering
+            # Snuffler's single-key shortcuts
+            self.label_edit.setFocus()
+
+        def _commit_label(self):
+            text = self.label_edit.text().strip()
+            if text and self.label_marker is not None:
+                # same call as the else-branch of set_phase_kind: the label
+                # of a phase marker is its phasename, which is also what the
+                # marker table's Label column edits and the file stores.
+                self.label_marker.convert_to_phase_marker(
+                    self.get_active_event(), text, None, False)
+                self.update()
 
         def start_picking(self, batch=False, previous=None):
             if not self.picking:
