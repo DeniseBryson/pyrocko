@@ -5,11 +5,11 @@
 
 from . import (
     minmax, rms, seisbench_picker, stalta, geofon, ampspec, catalogs, download,
-    cake_phase, seismosizer, map, polarization, spectrogram)
+    cake_phase, seismosizer, map, polarization, spectrogram, scroll)
 
 modules = [
     minmax, rms, download, stalta, geofon, ampspec, catalogs, map, cake_phase,
-    seismosizer, polarization, spectrogram, seisbench_picker]
+    seismosizer, polarization, spectrogram, seisbench_picker, scroll]
 
 
 def __snufflings__():
